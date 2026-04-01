@@ -1,13 +1,25 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from todo.models import Task
-# Create your views here.
 
 
+# 🔐 Home page (Login required)
+@login_required
 def home(request):
-    tasks = Task.objects.filter(is_completed=False).order_by('-updated_at')
-    completed_tasks = Task.objects.filter(is_completed=True)
-    context = {  # ✅ Now it's assigned to context
+    # ✅ Show only current user's tasks
+    tasks = Task.objects.filter(
+        user=request.user,
+        is_completed=False
+    ).order_by('-updated_at')
+
+    completed_tasks = Task.objects.filter(
+        user=request.user,
+        is_completed=True
+    )
+
+    context = {
         'tasks': tasks,
         'completed_tasks': completed_tasks,
     }
+
     return render(request, 'home.html', context)
