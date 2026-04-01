@@ -31,17 +31,6 @@
 
         .task-card:hover {
             background: #f8f9fa;
-            transition: 0.3s;
-        }
-
-        .task-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .task-actions a {
-            margin-left: 5px;
         }
 
         .completed-card {
@@ -58,6 +47,10 @@
             padding: 15px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .overdue {
+            border-left: 5px solid red;
         }
     </style>
 </head>
@@ -82,13 +75,42 @@
 
 <div class="container mt-4">
 
+    <!-- 🔔 TOAST MESSAGES -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- 🔍 SEARCH + FILTER -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <form method="GET">
+                <input type="text" name="q" class="form-control" placeholder="🔍 Search tasks..." value="{{ query }}">
+            </form>
+        </div>
+
+        <div class="col-md-3">
+            <form method="GET">
+                <select name="priority" class="form-control" onchange="this.form.submit()">
+                    <option value="">🎯 All Priority</option>
+                    <option value="Low">🟢 Low</option>
+                    <option value="Medium">🟡 Medium</option>
+                    <option value="High">🔴 High</option>
+                </select>
+            </form>
+        </div>
+    </div>
+
     <!-- 🔥 ADD TASK -->
     <div class="add-task-box mb-4">
         <form action="{% url 'addTask' %}" method="POST">
             {% csrf_token %}
 
             <div class="row g-2">
-
                 <div class="col-md-4">
                     <input type="text" name="task" class="form-control" placeholder="📝 Task..." required>
                 </div>
@@ -106,31 +128,31 @@
                 </div>
 
                 <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">
-                        ➕ Add
-                    </button>
+                    <button type="submit" class="btn btn-primary w-100">➕ Add</button>
                 </div>
-
             </div>
         </form>
     </div>
 
+    {% now "Y-m-d" as today %}
+
     <div class="row">
 
-        <!-- 🔹 ACTIVE TASKS -->
+        <!-- ACTIVE TASKS -->
         <div class="col-md-7">
             <h4>📌 Tasks</h4>
-            <p class="text-muted">{% now "jS F Y" %}</p>
 
             <div class="task-scroll" id="taskList">
                 {% for task in tasks %}
-                <div class="card task-card mb-2">
+                <div class="card task-card mb-2 
+                    {% if task.due_date and task.due_date < today and not task.is_completed %}
+                        overdue
+                    {% endif %}">
+                    
                     <div class="card-body">
 
-                        <!-- Task Title -->
                         <strong>{{ task.task }}</strong>
 
-                        <!-- Priority + Date -->
                         <div class="mt-1">
                             <small>
 
@@ -144,20 +166,17 @@
 
                                 <span class="ms-2">📅 {{ task.due_date|default:"No date" }}</span>
 
+                                {% if task.due_date and task.due_date < today %}
+                                    <span class="badge bg-danger ms-2">⚠ Overdue</span>
+                                {% endif %}
+
                             </small>
                         </div>
 
-                        <!-- Buttons -->
                         <div class="mt-2">
-                            <a href="{% url 'mark_as_done' task.pk %}" class="btn btn-success btn-sm">
-                                ✔ Done
-                            </a>
-                            <a href="{% url 'edit_task' task.pk %}" class="btn btn-primary btn-sm">
-                                ✏ Edit
-                            </a>
-                            <a href="{% url 'delete_task' task.pk %}" class="btn btn-danger btn-sm">
-                                🗑 Delete
-                            </a>
+                            <a href="{% url 'mark_as_done' task.pk %}" class="btn btn-success btn-sm">✔ Done</a>
+                            <a href="{% url 'edit_task' task.pk %}" class="btn btn-primary btn-sm">✏ Edit</a>
+                            <a href="{% url 'delete_task' task.pk %}" class="btn btn-danger btn-sm">🗑 Delete</a>
                         </div>
 
                     </div>
@@ -168,7 +187,7 @@
             </div>
         </div>
 
-        <!-- 🔹 COMPLETED TASKS -->
+        <!-- COMPLETED TASKS -->
         <div class="col-md-5">
             <h5>✅ Completed</h5>
 
@@ -176,7 +195,6 @@
                 {% for task in completed_tasks %}
                 <div class="card completed-card mb-2">
                     <div class="card-body">
-
                         <s>{{ task.task }}</s>
 
                         <div class="mt-2">
@@ -184,7 +202,6 @@
                                 ↩ Undo
                             </a>
                         </div>
-
                     </div>
                 </div>
                 {% empty %}
@@ -196,7 +213,7 @@
     </div>
 </div>
 
-<!-- 🔥 DRAG & DROP -->
+<!-- DRAG & DROP -->
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
 
 <script>
