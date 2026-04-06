@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            background: #f4f7fe;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 220px;
+            height: 100vh;
+            background: #1e293b;
+            color: white;
+            padding: 20px;
+            position: fixed;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #cbd5e1;
+            text-decoration: none;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .sidebar a:hover {
+            background: #334155;
+            color: white;
+        }
+
+        /* MAIN */
+        .main {
+            margin-left: 220px;
+            width: 100%;
+        }
+
+        /* 🔥 UPDATED TOP BAR (VISIBLE CHANGE) */
+        .topbar {
+            background: linear-gradient(135deg, #c7d2fe, #e0e7ff); /* STRONG COLOR */
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 14px;
+            margin: 12px 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* HEADER TEXT */
+        .topbar h3 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* RIGHT SIDE */
+        .topbar div {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* LOGOUT BUTTON (UNCHANGED) */
+        .logout {
+            background: #ff4d4d;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        .logout:hover {
+            background: #e60000;
+        }
+
+        /* CONTENT */
+        .content {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>Task Manager</h2>
+
+        <a href="{% url 'todo:home' %}">🏠 Dashboard</a>
+        <a href="#">📋 All Tasks</a>
+        <a href="#">⚙ Settings</a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+        <!-- TOP BAR -->
+        <div class="topbar">
+            <h3>{% block header %}Dashboard{% endblock %}</h3>
+
+            <div>
+                👤 Hello, {{ request.user.username }}
+                <a href="{% url 'logout' %}" class="logout">Logout</a>
+            </div>
+        </div>
+
+        <!-- CONTENT -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+
+    </div>
+
+</body>
+</html>

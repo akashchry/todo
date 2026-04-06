@@ -1,23 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
-from accounts.views import dashboard_redirect
-
-
-# 🔐 Redirect root → login page
-def root_redirect(request):
-    return redirect('login')
-
+from todo import views
 
 urlpatterns = [
-    # 🔹 Admin panel
+    # 🔹 Admin
     path('admin/', admin.site.urls),
 
-    # 🔹 Default route → login
-    path('', root_redirect, name='root'),
-
-    # 🔐 Authentication URLs
+    # 🔐 LOGIN
     path(
         'login/',
         auth_views.LoginView.as_view(
@@ -26,17 +16,45 @@ urlpatterns = [
         name='login'
     ),
 
+    # 🔐 LOGOUT
+    path('logout/', views.user_logout, name='logout'),
+
+    # 🔐 SIGNUP
+    path('signup/', include('accounts.urls')),
+
+    # 📌 TODO APP (MAIN APP)
+    path('', include('todo.urls')),   # ✅ homepage = dashboard
+
+    # 🔐 PASSWORD RESET
     path(
-        'logout/',
-        auth_views.LogoutView.as_view(),
-        name='logout'
+        'password-reset/',
+        auth_views.PasswordResetView.as_view(
+            template_name='accounts/password_reset.html'
+        ),
+        name='password_reset'
     ),
 
-    # 🔐 Signup (accounts app)
-    path('accounts/', include('accounts.urls')),
+    path(
+        'password-reset/done/',
+        auth_views.PasswordResetDoneView.as_view(
+            template_name='accounts/password_reset_done.html'
+        ),
+        name='password_reset_done'
+    ),
 
-    # 📌 Todo app (home page inside this)
-    path('todo/', include('todo.urls')),
+    path(
+        'reset/<uidb64>/<token>/',
+        auth_views.PasswordResetConfirmView.as_view(
+            template_name='accounts/password_reset_confirm.html'
+        ),
+        name='password_reset_confirm'
+    ),
 
-    path('dashboard/', dashboard_redirect, name='dashboard'),
+    path(
+        'reset/done/',
+        auth_views.PasswordResetCompleteView.as_view(
+            template_name='accounts/password_reset_complete.html'
+        ),
+        name='password_reset_complete'
+    ),
 ]

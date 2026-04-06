@@ -1,12 +1,19 @@
 from django.urls import path
 from . import views
 
-urlpatterns = [
-    path('', views.home, name='home'),   # ✅ THIS FIXES /todo/
+app_name = 'todo'
 
-    path('add/', views.addTask, name='addTask'),
-    path('delete/<int:pk>/', views.delete_task, name='delete_task'),
-    path('edit/<int:pk>/', views.edit_task, name='edit_task'),
-    path('mark-done/<int:pk>/', views.mark_as_done, name='mark_as_done'),
-    path('mark-undone/<int:pk>/', views.mark_as_undone, name='mark_as_undone'),
+urlpatterns = [
+    # 🏠 Dashboard
+    path('', views.home, name='home'),   # 🔥 better: homepage instead of /home/
+
+    # 📝 Task CRUD
+    path('task/add/', views.add_task, name='add_task'),
+    path('task/<int:pk>/edit/', views.edit_task, name='edit_task'),
+    path('task/<int:pk>/delete/', views.delete_task, name='delete_task'),
+
+    # ✅ Task Status
+    path('task/<int:pk>/done/', views.mark_as_done, name='mark_as_done'),
+    path('task/<int:pk>/undone/', views.mark_as_undone, name='mark_as_undone'),
+    
 ]

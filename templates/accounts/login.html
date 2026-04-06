@@ -1,72 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
+<meta charset="UTF-8">
+<title>Login</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            background: linear-gradient(135deg, #4e73df, #1cc88a);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
 
-        .login-card {
-            width: 400px;
-            padding: 30px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#4f46e5,#06b6d4);
+}
 
-        .login-card h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
+/* MAIN BOX */
+.container{
+    width:900px;
+    height:520px;
+    display:flex;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 40px rgba(0,0,0,0.2);
+}
 
-        .btn-custom {
-            width: 100%;
-        }
+/* LEFT PANEL (FORM) */
+.left{
+    width:50%;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    padding:50px;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    animation:fadeIn 0.6s ease;
+}
 
-        .signup-link {
-            text-align: center;
-            margin-top: 15px;
-        }
-    </style>
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(20px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.left h1{
+    margin-bottom:10px;
+}
+
+.left p{
+    margin-bottom:25px;
+    color:#ddd;
+}
+
+/* INPUT */
+.input-box{
+    position:relative;
+    margin-bottom:15px;
+}
+
+.input-box input{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    outline:none;
+    background:rgba(255,255,255,0.2);
+    color:white;
+}
+
+.input-box input::placeholder{
+    color:#ddd;
+}
+
+/* PASSWORD TOGGLE */
+.toggle{
+    position:absolute;
+    right:10px;
+    top:12px;
+    cursor:pointer;
+}
+
+/* BUTTON */
+.btn{
+    width:100%;
+    padding:12px;
+    background:#6366f1;
+    border:none;
+    border-radius:10px;
+    color:white;
+    font-weight:500;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    background:#4f46e5;
+}
+
+/* LINKS */
+.link{
+    text-align:right;
+    margin-bottom:10px;
+}
+
+.link a{
+    color:#fff;
+    font-size:14px;
+}
+
+/* RIGHT PANEL */
+.right{
+    width:50%;
+    background:linear-gradient(135deg,#4f46e5,#06b6d4);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    color:white;
+    text-align:center;
+}
+
+.right h2{
+    font-size:28px;
+}
+
+/* ERROR */
+.error{
+    background:#ff6b6b;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    text-align:center;
+}
+</style>
 </head>
+
 <body>
 
-<div class="login-card">
-    <h2>Login</h2>
+<div class="container">
 
-    <form method="post">
-        {% csrf_token %}
+<!-- LEFT -->
+<div class="left">
 
-        <div class="mb-3">
-            <label>Username</label>
-            {{ form.username }}
-        </div>
+<h1>Welcome Back 👋</h1>
+<p>Login to continue your tasks</p>
 
-        <div class="mb-3">
-            <label>Password</label>
-            {{ form.password }}
-        </div>
+{% if messages %}
+    {% for message in messages %}
+        <div class="error">{{ message }}</div>
+    {% endfor %}
+{% endif %}
 
-        <button type="submit" class="btn btn-primary btn-custom">Login</button>
-    </form>
+<form method="POST">
+{% csrf_token %}
 
-    <div class="signup-link">
-        <p>Don't have an account? 
-            <a href="/accounts/signup/">Signup</a>
-        </p>
-    </div>
+<div class="input-box">
+<input type="text" name="username" placeholder="Username" required>
 </div>
+
+<div class="input-box">
+<input type="password" id="password" name="password" placeholder="Password" required>
+<span class="toggle" onclick="togglePassword()">👁</span>
+</div>
+
+<div class="link">
+<a href="{% url 'password_reset' %}">Forgot password?</a>
+</div>
+
+<button class="btn">Sign In</button>
+
+</form>
+
+<p style="margin-top:15px;">
+Don't have an account?
+<a href="{% url 'signup' %}" style="color:white; text-decoration:underline;">Sign Up</a>
+</p>
+
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+<h2>Task Manager 🚀</h2>
+</div>
+
+</div>
+
+<script>
+function togglePassword(){
+    const pass=document.getElementById("password");
+    pass.type=pass.type==="password"?"text":"password";
+}
+</script>
 
 </body>
 </html>

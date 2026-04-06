@@ -2,76 +2,149 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Signup</title>
+    <title>Sign Up</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            background: linear-gradient(135deg, #36b9cc, #1cc88a);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            background: linear-gradient(135deg, #4f46e5, #06b6d4);
         }
 
-        .signup-card {
-            width: 420px;
-            padding: 30px;
-            border-radius: 15px;
-            background: white;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        .box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 40px;
+            border-radius: 20px;
+            width: 350px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            color: white;
+            animation: fadeIn 0.6s ease;
         }
 
-        .signup-card h2 {
+        @keyframes fadeIn {
+            from {opacity: 0; transform: translateY(20px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        h2 {
             text-align: center;
             margin-bottom: 20px;
-            font-weight: bold;
         }
 
-        .btn-custom {
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        input {
             width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
         }
 
-        .login-link {
+        input::placeholder {
+            color: #ddd;
+        }
+
+        .toggle {
+            position: absolute;
+            right: 10px;
+            top: 12px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #6366f1;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #4f46e5;
+        }
+
+        .error {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .bottom-text {
             text-align: center;
             margin-top: 15px;
         }
+
+        .bottom-text a {
+            color: #fff;
+            text-decoration: underline;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="signup-card">
-    <h2>Create Account</h2>
+<div class="box">
+    <h2>Create Account 🚀</h2>
 
-    <form method="post">
+    {% if messages %}
+        {% for message in messages %}
+            <p class="error">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
         {% csrf_token %}
 
-        <div class="mb-3">
-            <label>Username</label>
-            {{ form.username }}
+        <div class="input-group">
+            <input type="text" name="username" placeholder="Username" required>
         </div>
 
-        <div class="mb-3">
-            <label>Password</label>
-            {{ form.password1 }}
+        <div class="input-group">
+            <input type="email" name="email" placeholder="Email" required>
         </div>
 
-        <div class="mb-3">
-            <label>Confirm Password</label>
-            {{ form.password2 }}
+        <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <span class="toggle" onclick="togglePassword()">👁</span>
         </div>
 
-        <button type="submit" class="btn btn-success btn-custom">Signup</button>
+        <button type="submit">Sign Up</button>
     </form>
 
-    <div class="login-link">
-        <p>Already have an account? 
-            <a href="/login/">Login</a>
-        </p>
+    <div class="bottom-text">
+        Already have an account? <a href="{% url 'login' %}">Login</a>
     </div>
 </div>
+
+<script>
+function togglePassword() {
+    const pass = document.getElementById("password");
+    pass.type = pass.type === "password" ? "text" : "password";
+}
+</script>
 
 </body>
 </html>

@@ -45,7 +45,7 @@
                     ✏ Edit Task
                 </h3>
 
-                <form action="{% url 'edit_task' task.pk %}" method="POST">
+                <form action="{% url 'todo:edit_task' task.id %}" method="POST">
                     {% csrf_token %}
 
                     <!-- TASK NAME -->
@@ -86,7 +86,7 @@
                     <!-- BUTTONS -->
                     <div class="d-flex justify-content-between">
 
-                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                        <a href="{% url 'todo:home' %}" class="btn btn-secondary">
                             ⬅ Back
                         </a>
 

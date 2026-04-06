@@ -104,11 +104,11 @@ USE_TZ = True
 # 📁 STATIC FILES
 STATIC_URL = 'static/'
 
-
 # 🔐 AUTHENTICATION SETTINGS
-LOGIN_URL = 'login'                 # login page
+LOGIN_URL = 'login'
 
-# 🔥 IMPORTANT CHANGE (ROLE-BASED REDIRECT)
-LOGIN_REDIRECT_URL = '/dashboard/'  # go to dashboard_redirect view
+LOGIN_REDIRECT_URL = 'todo:home'     # ✅ BEST PRACTICE (use name, not path)
+LOGOUT_REDIRECT_URL = 'login'        # ✅ redirect to login after logout
 
-LOGOUT_REDIRECT_URL = 'login'       # after logout → login
+# 📧 EMAIL SETTINGS
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
